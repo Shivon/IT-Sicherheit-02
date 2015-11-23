@@ -16,19 +16,34 @@ class LCG {
     this.startValue = startValue;
   }
 
+  /*
+   * This function creates a pseudo number with linear congruential method
+   */
   public BigInteger nextValue() {
     startValue = (factorA.multiply(startValue).add(incrementB)).mod(moduloN);
     return startValue;
   }
 
   public static void main(String[] args) {
-    // For testing purpose with static startValue
-    // LCG lcg = new LCG(BigInteger.valueOf(100L));
+    /*
+     * Gets input param as start value if existing
+     * Else generates random start value
+     */
+    long inputValue;
+    if (args.length == 1) {
+      try {
+        inputValue = Long.parseLong(args[0]);
+      } catch (NumberFormatException e) {
+        System.out.println("Please enter a number as parameter.");
+        return;
+      }
+    } else {
+      // With random startValue
+      Random rand = new Random();
+      inputValue = rand.nextLong();
+    }
 
-    // with random startValue
-    Random rand = new Random();
-    long random = rand.nextLong();
-    LCG lcg = new LCG(BigInteger.valueOf(random));
+    LCG lcg = new LCG(BigInteger.valueOf(inputValue));
 
     for (int i = 0; i < 30; i++) {
       System.out.println(lcg.nextValue());

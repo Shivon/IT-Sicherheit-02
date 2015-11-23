@@ -13,3 +13,9 @@
 ### Further reading
 
 * [Simple reading @Attraktor - German](http://attraktor.info/komplizierter-name-einfache-funktion-lineare-kongruenzgeneratoren/)
+
+### Explanatory note
+
+* We used SUN-UNIX drand48 for reference
+  * The parameters within this reference are so big that even long is not enough and creates an overflow    
+    -> we have to use BigInter

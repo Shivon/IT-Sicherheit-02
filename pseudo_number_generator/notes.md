@@ -9,3 +9,7 @@
 
 * use combination if params for a, b and N from file "LinearerKongruenzgenerator-Infos.pdf"
 * pay attention to using adequate data types (e.g. "long") for preventing possible overflow
+
+### Further reading
+
+* [Simple reading @Attraktor - German](http://attraktor.info/komplizierter-name-einfache-funktion-lineare-kongruenzgeneratoren/)

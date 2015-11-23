@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 import java.util.Random;
 
-class LCG {
+public class LCG {
   /*
    * Params as per SUN-UNIX drand48
    * IMPORTANT: Since the numbers are so big in this reference, even long is not enough

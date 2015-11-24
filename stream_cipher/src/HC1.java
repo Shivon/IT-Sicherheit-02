@@ -18,11 +18,24 @@ public class HC1 {
         this.inputPath = inputPath;
     }
 
-    public void crypt(String outputPath) throws FileNotFoundException {
+    public void crypt(String outputPath) throws IOException {
         FileInputStream inputStream = new FileInputStream(inputPath);
         FileOutputStream outputStream = new FileOutputStream(outputPath);
 
-        // TODO: get logic into this
+        // TODO: Re-check
+        byte[] buffer = new byte[8];
+        int readInput;
+        while ((readInput = inputStream.read(buffer)) > 0) {
+            BigInteger nextRandomKey = this.key.nextValue();
+
+            for (int i = 0; i < readInput; i++) {
+                buffer[i] = (byte) (buffer[i] ^ (byte)(nextRandomKey.longValue() >> 8 * i));
+            }
+
+            outputStream.write(buffer, 0, readInput);
+        }
+        inputStream.close();
+        outputStream.close();
     }
 
     public static void main(String[] args) throws IOException {

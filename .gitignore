@@ -3,5 +3,5 @@
 IT-Sicherheit-02.iml
 /out
 /build
-/pseudo_number_generator/src/*.class
 /*/*.iml
+/*/*/*.class

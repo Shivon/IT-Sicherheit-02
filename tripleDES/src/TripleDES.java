@@ -16,10 +16,9 @@ public class TripleDES {
 	private DES desFirst;
 	private DES desSecond;
 	private DES desThird;
-	private byte[] initVector = new byte[8];
+	private byte[] initVector = new byte[32];
 
-	// Konstruktor mit parametern; Dateiname einer zu
-	// verschlüsselnden/entschlüsselnden Datei,
+	// Konstruktor mit parametern; Dateiname einer zu verschlüsselnden/entschlüsselnden Datei,
 	// Dateiname einer Schlüssel-Datei
 	//Belegung der Schlüssel + Initialiesierungs Vector
 	public TripleDES(File verschluesselteDatei, File entschluesselteDatei, File schluesselDatei) {
@@ -36,17 +35,16 @@ public class TripleDES {
 	public void initKeysVector(File schluesselDatei) throws IOException{	
 	FileInputStream in = new FileInputStream(schluesselDatei);
 	int len = (int)schluesselDatei.length();
-	byte[] des1 = new byte[8];
-	byte[] des2 = new byte[8];
-	byte[] des3 = new byte[8];
-	System.out.println(len);
-	in.read(des1, 0, 8);
+	byte[] des1 = new byte[32];
+	byte[] des2 = new byte[32];
+	byte[] des3 = new byte[32];
+	in.read(des1, 0, 7);
 	desFirst = new DES(des1);
-	in.read(des2, 9, 8);
+	in.read(des2, 9, 7);
 	desSecond = new DES(des2);
-	in.read(des3, 17, 8);
+	in.read(des3, 17, 7);
 	desThird = new DES(des3);
-	in.read(initVector, 25, 8);
+	in.read(initVector, 25, 7);
 	in.close();
 	}
 	

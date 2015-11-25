@@ -1,4 +1,4 @@
-package tripleDES.src;
+// package tripleDES.src;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,11 +101,9 @@ public class TripleDES {
 		outputstream.close();
 	}
 
-	
 	public static void main(String[] args) throws IOException {
-		//parameters to start the application: 
+		//parameters to start the application:
 		//decrypt/encrypt,  , ,
-	
 		String status = args[0];
 		File input = new File(args[1]);
 		File inputKey = new File(args[2]);

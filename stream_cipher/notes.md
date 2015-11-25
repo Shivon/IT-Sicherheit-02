@@ -1,18 +1,24 @@
 ### Specification stream cipher
 
-* Write a Java program HC ()
-* Use your LCG class from part 1 and write
-Schreiben Sie unter Verwendung der LCG – Klasse aus Teil 1 ein JAVA-Programm HC1 („HAW-
-Chiffre 1“), welches als Eingabeparameter von der Standardeingabe einen numerischen Schlüssel
-(Startwert) sowie den Pfad für eine zu verschlüsselnde / entschlüsselnde Datei erhält.
-Ihr Programm soll jedes Byte der Datei mit einem – ausgehend vom übergebenen Startwert – „zufäl-
-lig“ erzeugten Schlüsselbyte mittels XOR verknüpfen und das Ergebnis in eine neue Chiffredatei aus-
-geben.
+* write a Java program HC1 („HAW-Chiffre 1“) which decrypts/ encrypts a file
+* use your LCG class from part 1
+* use input/ output streams instead of "buffered reader" or "buffered writer" classes
+
+#### Params
+1. Numeric key (start value)
+2. Path of input file
+3. Path of output file
+
+#### Procedure
+* reads each byte of an input file
+* concatenates it via XOR with a key byte
+* first key is generated with start value
+* following keys generated from predecessor key
+* resulting bytes are written into cipher file
 
 ### Tasks
 
-* Testen Sie Ihre Stromchiffre HC1, indem Sie eine Klartextdatei verschlüsseln und die erzeugte
-Chiffredatei anschließend durch einen nochmaligen Aufruf von HC1 wieder entschlüsseln.
-Verifizieren Sie (z.B. mittels „diff“), dass beide Dateien identische Inhalte besitzen.
-Arbeiten Sie mit Input/Outputstreams und vermeiden Sie die Verwendung von „Buffered Reader“
-oder „Buffered Writer“ – Klassen!
+* test stream cipher by
+  * encrypting a plaintext file
+  * decrypting the encrypted file by calling HC1 again
+  * check with `diff` of the plaintext and decrypted file if both really have the same content

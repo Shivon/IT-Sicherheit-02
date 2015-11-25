@@ -19,9 +19,9 @@ public class LCG {
   /*
    * This function creates a pseudo number with linear congruential method
    */
-  public BigInteger nextValue() {
+  public long nextValue() {
     startValue = (factorA.multiply(startValue).add(incrementB)).mod(moduloN);
-    return startValue;
+    return startValue.longValue();
   }
 
   public static void main(String[] args) {

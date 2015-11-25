@@ -19,3 +19,7 @@
 * We used SUN-UNIX drand48 for reference
   * The parameters within this reference are so big that even long is not enough and creates an overflow    
     -> we have to use BigInter
+
+### Additional notes
+
+* BigInteger is not as high-performing as long, take other standard and use long if performance is an issue (e.g. games)

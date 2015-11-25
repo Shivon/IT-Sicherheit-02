@@ -19,7 +19,8 @@ public class HC1 {
         int readInput;
         while ((readInput = inputStream.read(buffer)) > 0) {
             for (int i = 0; i < readInput; i++) {
-                buffer[i] = (byte) (buffer[i] ^ (byte) (this.key.nextValue().longValue()));
+                // only the low byte of the key is used for XOR since we only take one byte at once from stream
+                buffer[i] = (byte) (buffer[i] ^ (byte) (this.key.nextValue()));
             }
 
             outputStream.write(buffer, 0, readInput);

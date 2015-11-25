@@ -10,6 +10,8 @@ import java.io.OutputStream;
 
 public class TripleDES {
 
+	// TODO: refactor and debug
+
 	private File verschluesselteDatei;
 	private File entschluesselteDatei;
 	private File schluesselDatei;
@@ -51,20 +53,19 @@ public class TripleDES {
 		InputStream inputstream = new FileInputStream(verschluesselteDatei);
 		OutputStream outputstream = new FileOutputStream(entschluesselteDatei);
 		byte[] plaintext = new byte[8];
-		byte[] encryptBuffer = new byte[8];
-		byte[] decryptBuffer;
+		byte[] randomBytes = new byte[8];
+		byte[] encryptBytes;
 		// cfb 1.schritt
-		desFirst.encrypt(initVector, 0, encryptBuffer, 0);
-		desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
-		desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
-		while (inputstream.read(plaintext) > 0) {
-			decryptBuffer = xor(encryptBuffer, plaintext);
-			outputstream.write(decryptBuffer);
-			desFirst.encrypt(plaintext, 0, encryptBuffer, 0);
-			desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
-			desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
-			outputstream.write(plaintext);
-
+		desFirst.encrypt(initVector, 0, randomBytes, 0);
+		desSecond.decrypt(randomBytes, 0, randomBytes, 0);
+		desThird.encrypt(randomBytes, 0, randomBytes, 0);
+		int length;
+		while ((length = inputstream.read(plaintext)) > 0) {
+			encryptBytes = xor(randomBytes, plaintext);
+			outputstream.write(encryptBytes, 0, length);
+			desFirst.encrypt(encryptBytes, 0, randomBytes, 0);
+			desSecond.decrypt(randomBytes, 0, randomBytes, 0);
+			desThird.encrypt(randomBytes, 0, randomBytes, 0);
 		}
 		inputstream.close();
 		outputstream.close();
@@ -81,6 +82,7 @@ public class TripleDES {
 	}
 
 	//decrypt the file
+	// TODO: this has issues, please refer above encrypt func
 	public void decrypt() throws IOException {
 		InputStream inputstream = new FileInputStream(this.verschluesselteDatei);
 		OutputStream outputstream = new FileOutputStream(entschluesselteDatei);

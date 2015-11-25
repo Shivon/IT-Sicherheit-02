@@ -15,14 +15,11 @@ public class HC1 {
         FileInputStream inputStream = new FileInputStream(inputPath);
         FileOutputStream outputStream = new FileOutputStream(outputPath);
 
-        // TODO: Re-check
-        byte[] buffer = new byte[8];
+        byte[] buffer = new byte[16];
         int readInput;
         while ((readInput = inputStream.read(buffer)) > 0) {
-            BigInteger nextRandomKey = this.key.nextValue();
-
             for (int i = 0; i < readInput; i++) {
-                buffer[i] = (byte) (buffer[i] ^ (byte)(nextRandomKey.longValue() >> 8 * i));
+                buffer[i] = (byte) (buffer[i] ^ (byte) (this.key.nextValue().longValue()));
             }
 
             outputStream.write(buffer, 0, readInput);

@@ -1,6 +1,8 @@
 ### Specification stream cipher
 
-* Schreiben Sie unter Verwendung der LCG – Klasse aus Teil 1 ein JAVA-Programm HC1 („HAW-
+* Write a Java program HC ()
+* Use your LCG class from part 1 and write
+Schreiben Sie unter Verwendung der LCG – Klasse aus Teil 1 ein JAVA-Programm HC1 („HAW-
 Chiffre 1“), welches als Eingabeparameter von der Standardeingabe einen numerischen Schlüssel
 (Startwert) sowie den Pfad für eine zu verschlüsselnde / entschlüsselnde Datei erhält.
 Ihr Programm soll jedes Byte der Datei mit einem – ausgehend vom übergebenen Startwert – „zufäl-

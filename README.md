@@ -21,3 +21,11 @@ Pseudo number generator, stream cipher and tripleDES
 * Execute stream cipher by typing in terminal `java HC1 <number> <input path> <output path>`, e.g. `java HC1 9630 ../inputFile1.txt ../outputFile1.txt`
   * this will call the stream cipher with the keyStartValue "9630", the reading file inputFile1.txt and the writing file outputFile1.txt
 * For __further notes__ see notes.md in the folder stream_cipher
+
+
+### tripleDES
+
+* __Usage__ via terminal
+* Go into `/tripleDES/src` and compile all java files (`javac *.java`)
+* Execute tripleDES by typing in terminal `java TripleDES <decrypt/encrypt> <input path> <key> <output path>`, e.g. `java TripleDES decrypt ../3DESTest.enc ../3DESTest.key ../3des.pdf`
+  * this will call the tripleDES with the modus "decrypt", the reading file 3DESTest.enc, the key 3DESTest.key and the writing file 3des.pdf

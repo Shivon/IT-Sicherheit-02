@@ -3,13 +3,6 @@ import java.math.BigInteger;
 
 public class HC1 {
 
-//    Schreiben Sie unter Verwendung der LCG – Klasse aus Teil 1 ein JAVA-Programm HC1 („HAW-Chiffre 1“),
-//    welches als Eingabeparameter von der Standardeingabe einen numerischen Schlüssel
-//    (Startwert) sowie den Pfad für eine zu verschlüsselnde / entschlüsselnde Datei erhält.
-
-//    Ihr Programm soll jedes Byte der Datei mit einem – ausgehend vom übergebenen Startwert – „zufäl-
-//    lig“ erzeugten Schlüsselbyte mittels XOR verknüpfen und das Ergebnis in eine neue Chiffredatei aus-
-//    geben.
     private final LCG key;
     private final String inputPath;
 

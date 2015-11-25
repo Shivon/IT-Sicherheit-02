@@ -18,9 +18,9 @@ public class TripleDES {
 	private DES desThird;
 	private byte[] initVector = new byte[32];
 
-	// Konstruktor mit parametern; Dateiname einer zu verschlüsselnden/entschlüsselnden Datei,
-	// Dateiname einer Schlüssel-Datei
-	//Belegung der Schlüssel + Initialiesierungs Vector
+	// Konstruktor mit parametern; Dateiname einer zu verschluesselnden/entschluesselnden Datei,
+	// Dateiname einer Schluessel-Datei
+	//Belegung der Schluessel + Initialiesierungs Vector
 	public TripleDES(File verschluesselteDatei, File entschluesselteDatei, File schluesselDatei) {
 		this.verschluesselteDatei = verschluesselteDatei;
 		this.entschluesselteDatei = entschluesselteDatei;
@@ -32,23 +32,23 @@ public class TripleDES {
 		}
 	}
 
-	public void initKeysVector(File schluesselDatei) throws IOException{	
-	FileInputStream in = new FileInputStream(schluesselDatei);
-	int len = (int)schluesselDatei.length();
-	byte[] des1 = new byte[32];
-	byte[] des2 = new byte[32];
-	byte[] des3 = new byte[32];
-	in.read(des1, 0, 7);
-	desFirst = new DES(des1);
-	in.read(des2, 9, 7);
-	desSecond = new DES(des2);
-	in.read(des3, 17, 7);
-	desThird = new DES(des3);
-	in.read(initVector, 25, 7);
-	in.close();
+	public void initKeysVector(File schluesselDatei) throws IOException{
+		FileInputStream in = new FileInputStream(schluesselDatei);
+		int len = (int)schluesselDatei.length();
+		byte[] des1 = new byte[32];
+		byte[] des2 = new byte[32];
+		byte[] des3 = new byte[32];
+		in.read(des1, 0, 7);
+		desFirst = new DES(des1);
+		in.read(des2, 9, 7);
+		desSecond = new DES(des2);
+		in.read(des3, 17, 7);
+		desThird = new DES(des3);
+		in.read(initVector, 25, 7);
+		in.close();
 	}
-	
-	// verschlüsseln
+
+	// verschluesseln
 	public void encrypt() throws IOException {
 		InputStream inputstream = new FileInputStream(this.verschluesselteDatei);
 		OutputStream outputstream = new FileOutputStream(entschluesselteDatei);
@@ -60,7 +60,7 @@ public class TripleDES {
 		desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
 		desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
 		while (inputstream.read(plaintext) > 0) {
-			// encrypted text xor mit nächsten 8 bytes
+			// encrypted text xor mit naechsten 8 bytes
 			decryptBuffer = xor(encryptBuffer, plaintext);
 			outputstream.write(decryptBuffer);
 			desFirst.encrypt(plaintext, 0, encryptBuffer, 0);
@@ -110,7 +110,7 @@ public class TripleDES {
 		File output = new File("C:\\Users\\bianca\\Desktop\\TripleDES.pdf");
 		TripleDES tripleDes = new TripleDES(input, output, inputKey);
 		String status = args[0];
-		// gewünschte Aktion abfragen
+		// gewuenschte Aktion abfragen
 		if (status.equals("encrypt")) {
 			tripleDes.encrypt();
 		} else if (status.equals("decrypt"))

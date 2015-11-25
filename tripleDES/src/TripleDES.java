@@ -18,10 +18,7 @@ public class TripleDES {
 	private DES desThird;
 	private byte[] initVector = new byte[8];
 
-	// Konstruktor mit folgenden Parametern; Dateiname einer zu
-	// verschlüsselnden/entschlüsselnden Datei,
-	// Dateiname einer Schlüssel-Datei
-	// Belegung der Schlüssel + Initialiesierungs Vector
+	// parameters: encrypted file, file to save the decrypted file, file with the keydata
 	public TripleDES(File verschluesselteDatei, File entschluesselteDatei, File schluesselDatei) {
 		this.verschluesselteDatei = verschluesselteDatei;
 		this.entschluesselteDatei = entschluesselteDatei;
@@ -33,6 +30,7 @@ public class TripleDES {
 		}
 	}
 
+	//splitting the keydata file in 3 DES and initial vector
 	public void initKeysVector() throws IOException {
 		FileInputStream in = new FileInputStream(schluesselDatei);
 		byte[] des1 = new byte[8];
@@ -40,7 +38,6 @@ public class TripleDES {
 		byte[] des3 = new byte[8];
 		in.read(des1);
 		desFirst = new DES(des1);
-		System.out.println();
 		in.read(des2);
 		desSecond = new DES(des2);
 		in.read(des3);;
@@ -49,7 +46,7 @@ public class TripleDES {
 		in.close();
 	}
 
-	// verschlüsseln
+	// encrypt the file
 	public void encrypt() throws IOException {
 		InputStream inputstream = new FileInputStream(verschluesselteDatei);
 		OutputStream outputstream = new FileOutputStream(entschluesselteDatei);
@@ -61,7 +58,6 @@ public class TripleDES {
 		desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
 		desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
 		while (inputstream.read(plaintext) > 0) {
-			// encrypted text xor mit nächsten 8 bytes
 			decryptBuffer = xor(encryptBuffer, plaintext);
 			outputstream.write(decryptBuffer);
 			desFirst.encrypt(plaintext, 0, encryptBuffer, 0);
@@ -75,6 +71,7 @@ public class TripleDES {
 
 	}
 
+	//xor encrypted text with the next 8 bytes
 	public byte[] xor(byte[] encryptedText, byte[] plainText) {
 		byte[] chiffre = new byte[8];
 		for (int i = 0; i < 8; i++) {
@@ -83,6 +80,7 @@ public class TripleDES {
 		return chiffre;
 	}
 
+	//decrypt the file
 	public void decrypt() throws IOException {
 		InputStream inputstream = new FileInputStream(this.verschluesselteDatei);
 		OutputStream outputstream = new FileOutputStream(entschluesselteDatei);
@@ -103,8 +101,11 @@ public class TripleDES {
 		outputstream.close();
 	}
 
+	
 	public static void main(String[] args) throws IOException {
-		// Parameter einlesen, Objekt erstellen
+		//parameters to start the application: 
+		//decrypt/encrypt,  , ,
+	
 		String status = args[0];
 		File input = new File(args[1]);
 		File inputKey = new File(args[2]);

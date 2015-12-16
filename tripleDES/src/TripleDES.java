@@ -53,26 +53,20 @@ public class TripleDES {
         InputStream inputstream = new FileInputStream(encryptedFile);
         OutputStream outputstream = new FileOutputStream(decryptedFile);
 
-        byte[] firstDESBuffer = new byte[8];
-        byte[] secondDESBuffer = new byte[8];
-        byte[] thirdDESBuffer = new byte[8];
+        byte[] inputBytes = new byte[8];
+        byte[] randomBytes = new byte[8];
+        byte[] resultBytes;
 
-        if (encrypt) {
-            secondDESBuffer = getModifiedOutputBuffer(initVector, secondDESBuffer);
+        randomBytes = tripleDES(initVector, randomBytes);
 
-            int length;
-            while ((length = inputstream.read(firstDESBuffer)) > 0) {
-                thirdDESBuffer = xor(secondDESBuffer, firstDESBuffer);
-                outputstream.write(thirdDESBuffer, 0, length);
-                secondDESBuffer = getModifiedOutputBuffer(thirdDESBuffer, secondDESBuffer);
-            }
-        } else {
-            firstDESBuffer = getModifiedOutputBuffer(initVector, firstDESBuffer);
-
-            while (inputstream.read(thirdDESBuffer) > 0) {
-                secondDESBuffer = xor(firstDESBuffer, thirdDESBuffer);
-                firstDESBuffer = getModifiedOutputBuffer(thirdDESBuffer, firstDESBuffer);
-                outputstream.write(secondDESBuffer);
+        int length;
+        while ((length = inputstream.read(inputBytes)) > 0) {
+            resultBytes = xor(randomBytes, inputBytes);
+            outputstream.write(resultBytes, 0, length);
+            if (encrypt) {
+                randomBytes = tripleDES(resultBytes, randomBytes);
+            } else {
+                randomBytes = tripleDES(inputBytes, randomBytes);
             }
         }
 
@@ -81,7 +75,7 @@ public class TripleDES {
     }
 
     // returns modified output buffer
-    private byte[] getModifiedOutputBuffer(byte[] inputBuffer, byte[] outputBuffer) {
+    private byte[] tripleDES(byte[] inputBuffer, byte[] outputBuffer) {
         desFirst.encrypt(inputBuffer, 0, outputBuffer, 0);
         desSecond.decrypt(outputBuffer, 0, outputBuffer, 0);
         desThird.encrypt(outputBuffer, 0, outputBuffer, 0);

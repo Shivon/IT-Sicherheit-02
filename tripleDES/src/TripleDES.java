@@ -1,4 +1,4 @@
-//package tripleDES;
+// package tripleDES;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+
 
 public class TripleDES {
     private File encryptedFile;
@@ -29,7 +29,7 @@ public class TripleDES {
 
 
     // splitting the key data file in 3 DES and initial vector
-    public void initKeysVector() throws IOException {
+    private void initKeysVector() throws IOException {
         FileInputStream inputStream = new FileInputStream(keyFile);
         byte[] des1 = new byte[8];
         byte[] des2 = new byte[8];
@@ -49,7 +49,7 @@ public class TripleDES {
     }
 
     
-    public void encryptDecrypt() throws IOException {
+    private void encryptDecrypt() throws IOException {
         InputStream inputstream = new FileInputStream(encryptedFile);
         OutputStream outputstream = new FileOutputStream(decryptedFile);
 
@@ -90,7 +90,7 @@ public class TripleDES {
     }
 
     // xor encrypted text with the next 8 bytes
-    public byte[] xor(byte[] encryptedText, byte[] plainText) {
+    private byte[] xor(byte[] encryptedText, byte[] plainText) {
         byte[] chiffre = new byte[8];
         for (int i = 0; i < 8; i++) {
             chiffre[i] = (byte) (encryptedText[i] ^ plainText[i]);

@@ -1,4 +1,4 @@
-package tripleDES;
+//package tripleDES;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,15 +18,11 @@ public class TripleDES {
 
 
     // params: encrypted file, file to save decrypted to, file with the key data
-    public TripleDES(File encryptedFile, File decryptedFile, File keyFile) {
+    public TripleDES(File encryptedFile, File decryptedFile, File keyFile) throws IOException {
         this.encryptedFile = encryptedFile;
         this.decryptedFile = decryptedFile;
         this.keyFile = keyFile;
-        try {
-            initKeysVector();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        initKeysVector();
     }
 
 
@@ -36,12 +32,16 @@ public class TripleDES {
         byte[] des1 = new byte[8];
         byte[] des2 = new byte[8];
         byte[] des3 = new byte[8];
+
         inputStream.read(des1);
         desFirst = new DES(des1);
+
         inputStream.read(des2);
         desSecond = new DES(des2);
+
         inputStream.read(des3);
         desThird = new DES(des3);
+        
         inputStream.read(initVector);
         inputStream.close();
     }
@@ -53,9 +53,11 @@ public class TripleDES {
         byte[] encryptBuffer = new byte[8];
         byte[] decryptBuffer = new byte[8];
         byte[] plainText = new byte[8];
+
         desFirst.encrypt(initVector, 0, encryptBuffer, 0);
         desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
         desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
+
         int length;
         while ((length = inputstream.read(plainText)) > 0){
             decryptBuffer = xor(encryptBuffer, plainText);
@@ -72,6 +74,7 @@ public class TripleDES {
                 outputstream.write(decryptBuffer);
             }
         }
+
         inputstream.close();
         outputstream.close();
     }
@@ -110,8 +113,7 @@ public class TripleDES {
         // determine if encrypt or decrypt
         if (status.equals("encrypt")) {
             tripleDes.encryptDecrypt(true);
-            }
-        else if (status.equals("decrypt")) {
+        } else if (status.equals("decrypt")) {
             tripleDes.encryptDecrypt(false);
         } else {
             System.out.println("Please choose status: decrypt or encrypt");

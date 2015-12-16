@@ -2,29 +2,26 @@ package tripleDES;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class TripleDES {
-    // TODO: refactor and debug
-    private File verschluesselteDatei;
-    private File entschluesselteDatei;
-    private File schluesselDatei;
+    private File encryptedFile;
+    private File decryptedFile;
+    private File keyFile;
     private DES desFirst;
     private DES desSecond;
     private DES desThird;
     private byte[] initVector = new byte[8];
 
-    // parameters: encrypted file, file to save the decrypted file, file with
-    // the keydata
-    public TripleDES(File verschluesselteDatei, File entschluesselteDatei,
-            File schluesselDatei) {
-        this.verschluesselteDatei = verschluesselteDatei;
-        this.entschluesselteDatei = entschluesselteDatei;
-        this.schluesselDatei = schluesselDatei;
+
+    // params: encrypted file, file to save decrypted to, file with the key data
+    public TripleDES(File encryptedFile, File decryptedFile, File keyFile) {
+        this.encryptedFile = encryptedFile;
+        this.decryptedFile = decryptedFile;
+        this.keyFile = keyFile;
         try {
             initKeysVector();
         } catch (IOException e) {
@@ -32,27 +29,27 @@ public class TripleDES {
         }
     }
 
-    // splitting the keydata file in 3 DES and initial vector
+
+    // splitting the key data file in 3 DES and initial vector
     public void initKeysVector() throws IOException {
-        FileInputStream in = new FileInputStream(schluesselDatei);
+        FileInputStream inputStream = new FileInputStream(keyFile);
         byte[] des1 = new byte[8];
         byte[] des2 = new byte[8];
         byte[] des3 = new byte[8];
-        in.read(des1);
+        inputStream.read(des1);
         desFirst = new DES(des1);
-        in.read(des2);
+        inputStream.read(des2);
         desSecond = new DES(des2);
-        in.read(des3);
+        inputStream.read(des3);
         desThird = new DES(des3);
-        in.read(initVector);
-        in.close();
+        inputStream.read(initVector);
+        inputStream.close();
     }
-
     
     
-    public void encryptDecrypt(Boolean isEncrypt) throws IOException{
-        InputStream inputstream = new FileInputStream(this.verschluesselteDatei);
-        OutputStream outputstream = new FileOutputStream(entschluesselteDatei);
+    public void encryptDecrypt(Boolean isEncrypt) throws IOException {
+        InputStream inputstream = new FileInputStream(this.encryptedFile);
+        OutputStream outputstream = new FileOutputStream(decryptedFile);
         byte[] encryptBuffer = new byte[8];
         byte[] decryptBuffer = new byte[8];
         byte[] plainText = new byte[8];
@@ -61,23 +58,24 @@ public class TripleDES {
         desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
         int length;
         while ((length = inputstream.read(plainText)) > 0){
-    
             decryptBuffer = xor(encryptBuffer, plainText);
         
-            if (!isEncrypt)
+            if (!isEncrypt) {
                 outputstream.write(decryptBuffer, 0, length);
+            }
         
             desFirst.encrypt(plainText, 0, encryptBuffer, 0);
             desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
             desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
-            if (!isEncrypt)
-            outputstream.write(decryptBuffer);
+
+            if (!isEncrypt) {
+                outputstream.write(decryptBuffer);
+            }
         }
         inputstream.close();
         outputstream.close();
     }
-        
-        
+
 
     // xor encrypted text with the next 8 bytes
     public byte[] xor(byte[] encryptedText, byte[] plainText) {
@@ -89,23 +87,34 @@ public class TripleDES {
     }
 
 
+    /*
+     * params to start the application:
+     * 1. input file to decrypt/ encrypt
+     * 2. key file
+     * 3. output file for decrypted/ encrypted data
+     * 4. status (decrypt/ encrypt)
+     */
     public static void main(String[] args) throws IOException {
-        // parameters to start the application:
-        // decrypt/encrypt, , ,
-        String status = args[0];
-        File input = new File(args[1]);
-        File inputKey = new File(args[2]);
-        File output = new File(args[3]);
-        TripleDES tripleDes = new TripleDES(input, output, inputKey);
-        // gewünschte Aktion abfragen
+        if (args.length != 4) {
+            System.out.println("Usage: java TripleDES inputFile keyFile outputFile status(choose: decrypt/ encrypt)");
+            return;
+        }
+
+        File inputFile = new File(args[0]);
+        File keyFile = new File(args[1]);
+        File outputFile = new File(args[2]);
+        String status = args[3];
+
+        TripleDES tripleDes = new TripleDES(inputFile, outputFile, keyFile);
+
+        // determine if encrypt or decrypt
         if (status.equals("encrypt")) {
             tripleDes.encryptDecrypt(true);
-            } else if (status.equals("decrypt")) {
+            }
+        else if (status.equals("decrypt")) {
             tripleDes.encryptDecrypt(false);
-            } else {
-            System.out
-                    .println("Bitte eine gewünschte Aktion aussuchen(decrypt/encrypt)");
+        } else {
+            System.out.println("Please choose status: decrypt or encrypt");
         }
     }
 }
-© 2015 Microsoft Nutzungsbedingungen Datenschutz und Cookies Impressum Entwickler Deutsch

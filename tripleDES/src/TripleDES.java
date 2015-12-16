@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class TripleDES {
     private File encryptedFile;
@@ -52,34 +53,25 @@ public class TripleDES {
         InputStream inputstream = new FileInputStream(encryptedFile);
         OutputStream outputstream = new FileOutputStream(decryptedFile);
 
-
         byte[] firstDESBuffer = new byte[8];
         byte[] secondDESBuffer = new byte[8];
         byte[] thirdDESBuffer = new byte[8];
 
         if (encrypt) {
-            desFirst.encrypt(initVector, 0, secondDESBuffer, 0);
-            desSecond.decrypt(secondDESBuffer, 0, secondDESBuffer, 0);
-            desThird.encrypt(secondDESBuffer, 0, secondDESBuffer, 0);
+            secondDESBuffer = getModifiedOutputBuffer(initVector, secondDESBuffer);
 
             int length;
             while ((length = inputstream.read(firstDESBuffer)) > 0) {
                 thirdDESBuffer = xor(secondDESBuffer, firstDESBuffer);
                 outputstream.write(thirdDESBuffer, 0, length);
-                desFirst.encrypt(thirdDESBuffer, 0, secondDESBuffer, 0);
-                desSecond.decrypt(secondDESBuffer, 0, secondDESBuffer, 0);
-                desThird.encrypt(secondDESBuffer, 0, secondDESBuffer, 0);
+                secondDESBuffer = getModifiedOutputBuffer(thirdDESBuffer, secondDESBuffer);
             }
         } else {
-            desFirst.encrypt(initVector, 0, firstDESBuffer, 0);
-            desSecond.decrypt(firstDESBuffer, 0, firstDESBuffer, 0);
-            desThird.encrypt(firstDESBuffer, 0, firstDESBuffer, 0);
+            firstDESBuffer = getModifiedOutputBuffer(initVector, firstDESBuffer);
 
             while (inputstream.read(thirdDESBuffer) > 0) {
                 secondDESBuffer = xor(firstDESBuffer, thirdDESBuffer);
-                desFirst.encrypt(thirdDESBuffer, 0, firstDESBuffer, 0);
-                desSecond.decrypt(firstDESBuffer, 0, firstDESBuffer, 0);
-                desThird.encrypt(firstDESBuffer, 0, firstDESBuffer, 0);
+                firstDESBuffer = getModifiedOutputBuffer(thirdDESBuffer, firstDESBuffer);
                 outputstream.write(secondDESBuffer);
             }
         }
@@ -88,6 +80,14 @@ public class TripleDES {
         outputstream.close();
     }
 
+    // returns modified output buffer
+    private byte[] getModifiedOutputBuffer(byte[] inputBuffer, byte[] outputBuffer) {
+        desFirst.encrypt(inputBuffer, 0, outputBuffer, 0);
+        desSecond.decrypt(outputBuffer, 0, outputBuffer, 0);
+        desThird.encrypt(outputBuffer, 0, outputBuffer, 0);
+
+        return outputBuffer;
+    }
 
     // xor encrypted text with the next 8 bytes
     public byte[] xor(byte[] encryptedText, byte[] plainText) {

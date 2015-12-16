@@ -15,6 +15,7 @@ public class TripleDES {
     private DES desSecond;
     private DES desThird;
     private byte[] initVector = new byte[8];
+    private boolean encrypt;
 
 
     // params: encrypted file, file to save decrypted to, file with the key data
@@ -45,33 +46,41 @@ public class TripleDES {
         inputStream.read(initVector);
         inputStream.close();
     }
+
     
-    
-    public void encryptDecrypt(Boolean isEncrypt) throws IOException {
-        InputStream inputstream = new FileInputStream(this.encryptedFile);
+    public void encryptDecrypt() throws IOException {
+        InputStream inputstream = new FileInputStream(encryptedFile);
         OutputStream outputstream = new FileOutputStream(decryptedFile);
-        byte[] encryptBuffer = new byte[8];
-        byte[] decryptBuffer = new byte[8];
-        byte[] plainText = new byte[8];
 
-        desFirst.encrypt(initVector, 0, encryptBuffer, 0);
-        desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
-        desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
 
-        int length;
-        while ((length = inputstream.read(plainText)) > 0){
-            decryptBuffer = xor(encryptBuffer, plainText);
-        
-            if (!isEncrypt) {
-                outputstream.write(decryptBuffer, 0, length);
+        byte[] firstDESBuffer = new byte[8];
+        byte[] secondDESBuffer = new byte[8];
+        byte[] thirdDESBuffer = new byte[8];
+
+        if (encrypt) {
+            desFirst.encrypt(initVector, 0, secondDESBuffer, 0);
+            desSecond.decrypt(secondDESBuffer, 0, secondDESBuffer, 0);
+            desThird.encrypt(secondDESBuffer, 0, secondDESBuffer, 0);
+
+            int length;
+            while ((length = inputstream.read(firstDESBuffer)) > 0) {
+                thirdDESBuffer = xor(secondDESBuffer, firstDESBuffer);
+                outputstream.write(thirdDESBuffer, 0, length);
+                desFirst.encrypt(thirdDESBuffer, 0, secondDESBuffer, 0);
+                desSecond.decrypt(secondDESBuffer, 0, secondDESBuffer, 0);
+                desThird.encrypt(secondDESBuffer, 0, secondDESBuffer, 0);
             }
-        
-            desFirst.encrypt(plainText, 0, encryptBuffer, 0);
-            desSecond.decrypt(encryptBuffer, 0, encryptBuffer, 0);
-            desThird.encrypt(encryptBuffer, 0, encryptBuffer, 0);
+        } else {
+            desFirst.encrypt(initVector, 0, firstDESBuffer, 0);
+            desSecond.decrypt(firstDESBuffer, 0, firstDESBuffer, 0);
+            desThird.encrypt(firstDESBuffer, 0, firstDESBuffer, 0);
 
-            if (!isEncrypt) {
-                outputstream.write(decryptBuffer);
+            while (inputstream.read(thirdDESBuffer) > 0) {
+                secondDESBuffer = xor(firstDESBuffer, thirdDESBuffer);
+                desFirst.encrypt(thirdDESBuffer, 0, firstDESBuffer, 0);
+                desSecond.decrypt(firstDESBuffer, 0, firstDESBuffer, 0);
+                desThird.encrypt(firstDESBuffer, 0, firstDESBuffer, 0);
+                outputstream.write(secondDESBuffer);
             }
         }
 
@@ -112,11 +121,14 @@ public class TripleDES {
 
         // determine if encrypt or decrypt
         if (status.equals("encrypt")) {
-            tripleDes.encryptDecrypt(true);
+            tripleDes.encrypt = true;
         } else if (status.equals("decrypt")) {
-            tripleDes.encryptDecrypt(false);
+            tripleDes.encrypt = false;
         } else {
             System.out.println("Please choose status: decrypt or encrypt");
+            return;
         }
+
+        tripleDes.encryptDecrypt();
     }
 }
